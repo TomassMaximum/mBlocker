@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/group_shop"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_shop"
+            android:icon="@drawable/ic_shop"
+            android:title="Shop" />
+    </group>
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_camera"
+            android:icon="@drawable/ic_eyes"
+            android:title="All" />
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_wheel"
+            android:title="Makers" />
+        <item
+            android:id="@+id/nav_slideshow"
+            android:icon="@drawable/ic_educator"
+            android:title="Educators" />
+    </group>
+
+    <group android:id="@+id/nav_category"
+        android:checkableBehavior="single">
+        <item android:id="@+id/nav_category_mBot"
+            android:icon="@drawable/ic_mbot"
+            android:title="mBot"/>
+        <item android:id="@+id/nav_category_codeybot"
+            android:icon="@drawable/ic_codeybot"
+            android:title="Codeybot"/>
+        <item android:id="@+id/nav_category_ultimate"
+            android:icon="@drawable/ic_ultimate"
+            android:title="Ultimate"/>
+    </group>
+
+    <item android:title="Settings">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_settings"
+                android:title="Settings" />
+            <item
+                android:id="@+id/nav_info"
+                android:icon="@drawable/ic_info"
+                android:title="About Makeblock" />
+        </menu>
+    </item>
+
+</menu>
