@@ -23,7 +23,7 @@ public class MyFragmentAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return mCount;
+        return 6;
     }
 
     @Override
