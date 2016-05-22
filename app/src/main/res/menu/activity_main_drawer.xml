@@ -11,15 +11,15 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_all"
             android:icon="@drawable/ic_eyes"
             android:title="All" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_makers"
             android:icon="@drawable/ic_wheel"
             android:title="Makers" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_educators"
             android:icon="@drawable/ic_educator"
             android:title="Educators" />
     </group>
@@ -40,7 +40,7 @@
     <item android:title="Settings">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_settings"
                 android:icon="@drawable/ic_settings"
                 android:title="Settings" />
             <item

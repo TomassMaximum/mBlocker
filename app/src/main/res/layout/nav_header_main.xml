@@ -13,22 +13,21 @@
 
     <ImageView
         android:id="@+id/user_avatar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="30dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+
         android:src="@drawable/ic_makeblock" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="Makeblock"
+        android:text="Dead Pool"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Do not go gentle into that good night." />
+        android:text="&quot;Maximum effort&quot;" />
 
 </LinearLayout>
