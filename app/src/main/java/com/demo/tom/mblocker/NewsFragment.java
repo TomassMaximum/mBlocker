@@ -1,28 +1,41 @@
 package com.demo.tom.mblocker;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.ImageView;
 
 import com.viewpagerindicator.PageIndicator;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Handler;
 
 /**
  * Created by tom on 16/5/22.
  */
 public class NewsFragment extends Fragment {
 
+    private static final String TAG = NewsFragment.class.getSimpleName();
+
     MyFragmentAdapter mAdapter;
-    LoopViewPager mPager;
+    ViewPager mPager;
     PageIndicator mIndicator;
+
+    final Handler delayHandler = new Handler();
+
+    private static int[] newsItemsId = {R.drawable.news_codeybot,R.drawable.news_mbot,R.drawable.news_ultimate,R.drawable.news_printer};
+
+    private static Bitmap[] newsItems = new Bitmap[4];
 
     Timer timer;
     int page = 1;
@@ -33,15 +46,25 @@ public class NewsFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_news,container,false);
 
+        long startTime = System.currentTimeMillis();
+        getBitmapFromResource();
+        long endTime = System.currentTimeMillis();
+        Log.e(TAG,"获取图片资源共耗时:" + (endTime - startTime));
+
         mAdapter = new MyFragmentAdapter(getChildFragmentManager());
 
-        mPager = (LoopViewPager) rootView.findViewById(R.id.viewpager_news_list);
+        mPager = (ViewPager) rootView.findViewById(R.id.viewpager_news_list);
         mPager.setAdapter(mAdapter);
 
         mIndicator = (PageIndicator) rootView.findViewById(R.id.indicator);
         mIndicator.setViewPager(mPager);
 
-        pageSwitcher(3);
+        delayHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                pageSwitcher(3);
+            }
+        },3000);
 
         return rootView;
     }
@@ -64,8 +87,10 @@ public class NewsFragment extends Fragment {
             getActivity().runOnUiThread(new Runnable() {
                 public void run() {
 
-                    if (page > 5) { // In my case the number of pages are 5
+                    if (page > 3) { // In my case the number of pages are 5
                         page = 0;
+                        mPager.setCurrentItem(page);
+                        page++;
                     } else {
                         mPager.setCurrentItem(page++);
                     }
@@ -76,8 +101,39 @@ public class NewsFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
+    public void onDetach() {
         timer.cancel();
-        super.onDestroy();
+        super.onDetach();
     }
+
+    private class MyFragmentAdapter extends FragmentPagerAdapter {
+
+        public MyFragmentAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Log.e(TAG,"当前位置为:" + position);
+            NewsFragmentItem newsFragmentItem = new NewsFragmentItem();
+            newsFragmentItem.setIndex(position);
+            newsFragmentItem.setImages(newsItems);
+            return newsFragmentItem;
+        }
+
+        @Override
+        public int getCount() {
+            return 4;
+        }
+
+    }
+
+    public void getBitmapFromResource(){
+        for (int i = 0;i < newsItemsId.length;i++){
+            Bitmap item = BitmapFactory.decodeResource(getResources(),newsItemsId[i]);
+            newsItems[i] = item;
+        }
+    }
+
+
 }
