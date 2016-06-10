@@ -33,9 +33,9 @@ public class NewsFragment extends Fragment {
 
     final Handler delayHandler = new Handler();
 
-    private static int[] newsItemsId = {R.drawable.news_codeybot,R.drawable.news_mbot,R.drawable.news_ultimate,R.drawable.news_printer};
+    public static int[] newsItemsId = {R.drawable.news_codeybot,R.drawable.news_mbot,R.drawable.news_ultimate,R.drawable.news_printer};
 
-    private static Bitmap[] newsItems = new Bitmap[4];
+    public static Bitmap[] newsItems = new Bitmap[4];
 
     Timer timer;
     int page = 1;
@@ -44,12 +44,9 @@ public class NewsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_news,container,false);
-
-        long startTime = System.currentTimeMillis();
         getBitmapFromResource();
-        long endTime = System.currentTimeMillis();
-        Log.e(TAG,"获取图片资源共耗时:" + (endTime - startTime));
+
+        View rootView = inflater.inflate(R.layout.fragment_news,container,false);
 
         mAdapter = new MyFragmentAdapter(getChildFragmentManager());
 
@@ -116,8 +113,9 @@ public class NewsFragment extends Fragment {
         public Fragment getItem(int position) {
             Log.e(TAG,"当前位置为:" + position);
             NewsFragmentItem newsFragmentItem = new NewsFragmentItem();
-            newsFragmentItem.setIndex(position);
-            newsFragmentItem.setImages(newsItems);
+            Bundle bundle = new Bundle();
+            bundle.putInt("position",position);
+            newsFragmentItem.setArguments(bundle);
             return newsFragmentItem;
         }
 
@@ -129,11 +127,17 @@ public class NewsFragment extends Fragment {
     }
 
     public void getBitmapFromResource(){
-        for (int i = 0;i < newsItemsId.length;i++){
-            Bitmap item = BitmapFactory.decodeResource(getResources(),newsItemsId[i]);
-            newsItems[i] = item;
-        }
-    }
+        long startTime = System.currentTimeMillis();
+        for (int i = 0;i < 4;i++){
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = false;
+            options.inSampleSize = 2;
+            Bitmap image = BitmapFactory.decodeResource(getResources(),newsItemsId[i],options);
 
+            newsItems[i] = image;
+        }
+        long endTime = System.currentTimeMillis();
+        Log.e(TAG,"获取图片资源共耗时:" + (endTime - startTime));
+    }
 
 }
