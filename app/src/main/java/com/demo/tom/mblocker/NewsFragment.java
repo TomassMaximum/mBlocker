@@ -28,7 +28,7 @@ public class NewsFragment extends Fragment {
     private static final String TAG = NewsFragment.class.getSimpleName();
 
     MyFragmentAdapter mAdapter;
-    ViewPager mPager;
+    private static ViewPager mPager;
     PageIndicator mIndicator;
 
     final Handler delayHandler = new Handler();

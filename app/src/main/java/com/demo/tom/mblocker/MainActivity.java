@@ -18,7 +18,7 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
-    NewsFragment newsFragment;
+    PostFragment postFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +43,9 @@ public class MainActivity extends AppCompatActivity
 
         disableNavigationViewScrollbars(navigationView);
 
-        newsFragment = new NewsFragment();
+        postFragment = new PostFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.news_container_fragment,newsFragment);
+        fragmentTransaction.add(R.id.news_container_fragment,postFragment);
         fragmentTransaction.commit();
 
     }

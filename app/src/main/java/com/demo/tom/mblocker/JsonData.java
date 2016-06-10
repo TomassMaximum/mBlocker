@@ -11,6 +11,7 @@ public class JsonData {
             "\"CommentsCount\":\"8\"," +
             "\"LikesCount\":\"20\"," +
             "\"ViewsCount\":\"332\"," +
+            "\"LatestReply\":\"2016-06-10 22:21:33\"" +
             "\"DemoContent\":\"I've heard that the AMA meeting is held once a week. So, what kind questions exactly I can ask? Does it...\"}}";
 
 }
