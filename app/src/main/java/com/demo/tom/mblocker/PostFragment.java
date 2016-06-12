@@ -1,5 +1,8 @@
 package com.demo.tom.mblocker;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by tom on 16/6/9.
@@ -102,7 +109,8 @@ public class PostFragment extends Fragment {
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.post_item,parent,false));
+            View view = LayoutInflater.from(getContext()).inflate(R.layout.post_item,parent,false);
+            return new ViewHolder(view);
         }
 
         @Override
@@ -136,6 +144,58 @@ public class PostFragment extends Fragment {
         @Override
         public int getItemCount() {
             return 10;
+        }
+
+        public ContentValues getDataFromDb(){
+            PostsDbHelper postsDbHelper = new PostsDbHelper(getContext(),null,null,1);
+            SQLiteDatabase db = postsDbHelper.getReadableDatabase();
+            Cursor cursor = db.query(PostsContract.Posts.TABLE_NAME,null,null,null,null,null,null);
+            cursor.moveToFirst();
+
+            return null;
+        }
+    }
+
+    public void extractDataFromJson(String jsonString){
+
+        PostsDbHelper postsDbHelper = new PostsDbHelper(getContext(),null,null,1);
+        SQLiteDatabase db = postsDbHelper.getWritableDatabase();
+
+        try {
+            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONArray posts = jsonObject.getJSONArray("post");
+
+            for (int i = 0;i < posts.length();i++){
+                JSONObject currentPost = posts.getJSONObject(i);
+                String title = currentPost.getString("title");
+                String postTime = currentPost.getString("PostTime");
+                String author = currentPost.getString("author");
+                String AuthorAvatarUrl = currentPost.getString("AuthorAvatarUrl");
+                String CommentsCount = currentPost.getString("CommentsCount");
+                String ViewsCount = currentPost.getString("ViewsCount");
+                String LikesCount = currentPost.getString("LikesCount");
+                String LatestReply = currentPost.getString("LatestReply");
+                String DemoContent = currentPost.getString("DemoContent");
+
+                ContentValues contentValues = new ContentValues();
+
+                contentValues.put(PostsContract.Posts.COLUMN_NAME_TITLE,title);
+                contentValues.put(PostsContract.Posts.COLUMN_NAME_POST_TIME,postTime);
+                contentValues.put(PostsContract.Posts.COLUMN_NAME_AUTHOR,author);
+                contentValues.put(PostsContract.Posts.COLUMN_NAME_AUTHOR_AVATAR_URL,AuthorAvatarUrl);
+                contentValues.put(PostsContract.Posts.COLUMN_NAME_COMMENTS_COUNT,CommentsCount);
+                contentValues.put(PostsContract.Posts.COLUMN_NAME_VIEWS_COUNT,ViewsCount);
+                contentValues.put(PostsContract.Posts.COLUMN_NAME_LIKES_COUNT,LikesCount);
+                contentValues.put(PostsContract.Posts.COLUMN_NAME_LATEST_REPLY,LatestReply);
+                contentValues.put(PostsContract.Posts.COLUMN_NAME_DEMO_CONTENT,DemoContent);
+
+                db.insert(PostsContract.Posts.TABLE_NAME,null,contentValues);
+            }
+            db.close();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e(TAG,"Json数据解析出错");
         }
     }
 
