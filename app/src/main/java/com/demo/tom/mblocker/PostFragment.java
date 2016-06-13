@@ -49,6 +49,9 @@ public class PostFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         Log.e(TAG,"onCreateView被调用");
+
+        extractDataFromJson(JsonData.POST_INFO);
+
         View rootView = inflater.inflate(R.layout.fragment_all,container,false);
 
         postRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_post);
@@ -128,15 +131,37 @@ public class PostFragment extends Fragment {
                         fragmentTransaction.commit();
                     }
                 }else {
-                    viewHolder.authorAvatar.setImageResource(R.drawable.ic_makeblock);
-                    viewHolder.authorName.setText("Makeblock");
-                    viewHolder.postTime.setText("2016-06-09 22:12:22");
-                    viewHolder.viewsCount.setText("877");
-                    viewHolder.commentsCount.setText("22");
-                    viewHolder.postTitle.setText("What kind questions can I ask in the AMA meeting?");
-                    viewHolder.replyTime.setText("2016-06-10 12:32:23");
-                    viewHolder.likesCount.setText("12");
-                    viewHolder.postDemoContent.setText("I've heard that the AMA meeting is held once a week. So, what kind questions exactly I can ask? Does it...");
+                    PostsDbHelper postsDbHelper = new PostsDbHelper(getContext());
+                    SQLiteDatabase db = postsDbHelper.getReadableDatabase();
+                    Cursor cursor = db.query(PostsContract.Posts.TABLE_NAME,null,null,null,null,null,null);
+                    if (cursor.moveToFirst()){
+                        cursor.moveToPosition(position);
+                        String title = cursor.getString(cursor.getColumnIndex("title"));
+                        String autor = cursor.getString(cursor.getColumnIndex("author"));
+                        String AuthorAvatarUrl = cursor.getString(cursor.getColumnIndex("AuthorAvatarUrl"));
+                        String PostTime = cursor.getString(cursor.getColumnIndex("PostTime"));
+                        String ViewsCount = cursor.getString(cursor.getColumnIndex("ViewsCount"));
+                        String CommentsCount = cursor.getString(cursor.getColumnIndex("CommentsCount"));
+                        String LikesCount = cursor.getString(cursor.getColumnIndex("LikesCount"));
+                        String ReplyTime = cursor.getString(cursor.getColumnIndex("LatestReply"));
+                        String DemoContent = cursor.getString(cursor.getColumnIndex("DemoContent"));
+
+                        viewHolder.postTitle.setText(title);
+                        viewHolder.authorName.setText(autor);
+                        viewHolder.postTime.setText(PostTime);
+                        viewHolder.commentsCount.setText(CommentsCount);
+                        viewHolder.viewsCount.setText(ViewsCount);
+                        viewHolder.replyTime.setText(ReplyTime);
+                        viewHolder.likesCount.setText(LikesCount);
+                        viewHolder.postDemoContent.setText(DemoContent);
+
+
+                    } else {
+                        Log.e(TAG,"Cursor为空");
+                    }
+
+                    cursor.close();
+                    db.close();
                 }
             }
         }
@@ -146,24 +171,18 @@ public class PostFragment extends Fragment {
             return 10;
         }
 
-        public ContentValues getDataFromDb(){
-            PostsDbHelper postsDbHelper = new PostsDbHelper(getContext(),null,null,1);
-            SQLiteDatabase db = postsDbHelper.getReadableDatabase();
-            Cursor cursor = db.query(PostsContract.Posts.TABLE_NAME,null,null,null,null,null,null);
-            cursor.moveToFirst();
-
-            return null;
-        }
     }
 
     public void extractDataFromJson(String jsonString){
 
-        PostsDbHelper postsDbHelper = new PostsDbHelper(getContext(),null,null,1);
+        PostsDbHelper postsDbHelper = new PostsDbHelper(getContext());
         SQLiteDatabase db = postsDbHelper.getWritableDatabase();
 
         try {
             JSONObject jsonObject = new JSONObject(jsonString);
-            JSONArray posts = jsonObject.getJSONArray("post");
+            JSONArray posts = jsonObject.getJSONArray("posts");
+
+            Log.e(TAG,"posts的长度为:" + posts.length());
 
             for (int i = 0;i < posts.length();i++){
                 JSONObject currentPost = posts.getJSONObject(i);
@@ -176,6 +195,8 @@ public class PostFragment extends Fragment {
                 String LikesCount = currentPost.getString("LikesCount");
                 String LatestReply = currentPost.getString("LatestReply");
                 String DemoContent = currentPost.getString("DemoContent");
+
+                Log.e(TAG,"解析出的数据为:" + author);
 
                 ContentValues contentValues = new ContentValues();
 
